@@ -1,0 +1,30 @@
+sudo: false
+language: bash 
+
+os:
+  - linux
+
+branches:
+  only:
+    - release-4.3
+
+before_install:
+- sudo apt-get update
+- sudo apt-get install -y unzip wget
+- echo $PWD
+- wget https://releases.hashicorp.com/terraform/0.12.20/terraform_0.12.20_linux_amd64.zip
+- unzip terraform_0.12.20_linux_amd64.zip
+- sudo mv terraform /usr/bin/
+- terraform version
+
+script:
+- terraform init
+- ./travis_tfvars.sh
+- terraform apply -var-file var.tfvars -auto-approve
+
+after_script:
+- terraform destroy -var-file var.tfvars -auto-approve
+
+notifications:
+  slack: ibm-systems-power:8MmdE50SqJM38YUA5hQLBqeV#ocp-icp-power-cicd
+

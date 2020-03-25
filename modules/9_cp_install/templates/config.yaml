@@ -1,0 +1,35 @@
+
+cluster_nodes:
+  master:
+%{ for mast in master ~}
+    - ${mast}
+%{ endfor ~}
+  proxy:
+%{ for prox in proxy ~}
+    - ${prox}
+%{ endfor ~}
+  management:
+%{ for mgmt in management ~}
+    - ${mgmt}
+%{ endfor ~}
+
+storage_class: ${storageclass_name}
+
+default_admin_user: ${admin_username}
+default_admin_password: ${admin_password}
+
+%{ if offline_url == "" }
+chart_repo:
+  addons:
+    url: "https://na.artifactory.swg-devops.com/artifactory/ui/artifactactions/downloadfolder?repoKey=hyc-cloud-private-${stage}-helm-local&path=latest&archiveType=tgz&includeChecksumFiles=false"
+    header: "X-JFrog-Art-Api: ${repo_token}"
+
+
+image_repo: ${repo_server}/${repo_namespace}
+private_registry_enabled: true
+private_registry_server: ${repo_server}
+docker_username: ${repo_user}
+docker_password: ${repo_token}
+%{ endif }
+
+${additional_configs}
